@@ -1,0 +1,61 @@
+doctype html
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js')
+  body
+    .container
+      h1(style='margin-bottom: 30px') Edit Data Student
+      form(action='/edit-student', method='POST')
+        .row.form-group
+          .col-4
+            label(for='student_id') Student ID:
+          .col-6
+            input.form-control(type='text', name='student_id', value=student_id)
+        .row.form-group
+          .col-4
+            label(for='firstname') First Name:
+          .col-6
+            input.form-control(type='text', name='first_name', value=first_name)
+        .row.form-group
+          .col-4
+            label(for='lastname') Last Name:
+          .col-6
+            input.form-control(type='text', name='lastname', value=lastname)
+        .row.form-group
+          .col-4
+            label(for='address') Address:
+          .col-6
+            input.form-control(type='text', name='address', value=address)
+        .row.form-group
+          .col-4
+            label(for='date_of_birth') Date of Birth:
+          .col-6
+            input.form-control(type='text', name='date_of_birth' value=date_of_birth)
+        .row.form-group
+          .col-4
+            label(for='gender') Gender:
+          .col-6
+            .radio
+              label
+                input(type='radio', name='gender', value='F' checked=gender=='F')
+                |  Female
+            .radio
+              label
+                input(type='radio', name='gender', value='M' checked=gender=='M')
+                |  Male
+        .row.form-group
+          .col-4
+            label(for='major') Major:
+          .col-6
+            input.form-control(type='text', name='major', value=major)
+        .row.form-group
+          .col-4
+            label(for='student_email') Student Email:
+          .col-6
+            input.form-control(type='email', name='student_email', value=student_email)
+        input.btn.btn-primary(type='submit', value='Edit')

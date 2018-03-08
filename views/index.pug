@@ -1,0 +1,38 @@
+html
+  head
+    title= 'Web Student'
+    link(href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css', rel='stylesheet')
+  body.container
+    h1= title
+    form(action='/input-student' method='GET')
+      input.btn.btn-primary(type='submit', value='Input New Student', style='margin-bottom: 20px')
+    table.table
+      thead.thead-dark
+        tr
+          th= 'ID'
+          th= 'First Name'
+          th= 'Last Name'
+          th= 'Address'
+          th= 'Date of Birth'
+          th= 'Gender'
+          th= 'Major'
+          th= 'Student Email'
+          th= 'Action'
+      for student in data
+        tr
+          td= student.student_id
+          td= student.first_name
+          td= student.lastname
+          td= student.address
+          td= student.date_of_birth
+          td= student.gender
+          td= student.major
+          td= student.student_email
+          td
+            a(href='/student/'+student.student_id)
+              button.btn.btn-success.btn-sm(type='button') Edit
+            a(href='/delete/'+student.student_id)
+              button.btn.btn-danger.btn-sm(type='button') Delete
+    script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js')
