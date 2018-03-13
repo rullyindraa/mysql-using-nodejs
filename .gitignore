@@ -1,4 +1,9 @@
+.DS_Store
 node_modules
+public/.DS_Store
+public/sb-admin/.DS_Store
+public/sb-admin/.jsbeautyfyrc
+public/sb-admin/.travis.yml
 public/sb-admin/pug
 public/sb-admin/scss
 public/sb-admin/.gitignore
