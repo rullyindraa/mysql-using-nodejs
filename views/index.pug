@@ -1,38 +1,48 @@
-html
+doctype html
+html(lang='en')
+
   head
-    title= 'Web Student'
-    link(href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css', rel='stylesheet')
-  body.container
-    h1= title
-    form(action='/input-student' method='GET')
-      input.btn.btn-primary(type='submit', value='Input New Student', style='margin-bottom: 20px')
-    table.table
-      thead.thead-dark
-        tr
-          th= 'ID'
-          th= 'First Name'
-          th= 'Last Name'
-          th= 'Address'
-          th= 'Date of Birth'
-          th= 'Gender'
-          th= 'Major'
-          th= 'Student Email'
-          th= 'Action'
-      for student in data
-        tr
-          td= student.student_id
-          td= student.first_name
-          td= student.lastname
-          td= student.address
-          td= student.date_of_birth
-          td= student.gender
-          td= student.major
-          td= student.student_email
-          td
-            a(href='/student/'+student.student_id)
-              button.btn.btn-success.btn-sm(type='button') Edit
-            a(href='/delete/'+student.student_id)
-              button.btn.btn-danger.btn-sm(type='button') Delete
-    script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js')
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js')
-    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js')
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    meta(name='description', content='')
+    meta(name='author', content='')
+
+    title SB Admin - Start Bootstrap Template
+
+    include includes/css/core.pug
+
+    // Page level plugin CSS
+    link(href='sb-admin/vendor/datatables/dataTables.bootstrap4.css', rel='stylesheet')
+
+    include includes/css/custom.pug
+
+  body#page-top.fixed-nav.sticky-footer.bg-dark
+    include includes/navbar.pug
+    .content-wrapper
+      .container-fluid
+        // Breadcrumbs
+        ol.breadcrumb
+          li.breadcrumb-item
+            a(href='#') Dashboard
+          li.breadcrumb-item.active My Dashboard
+        .h1 Welcome to Student Database
+        
+      include includes/footer.pug
+
+      include includes/scroll-to-top.pug
+
+      //include includes/modals/logout.pug
+
+      include includes/js/core.pug
+
+    // Page level plugin JavaScript
+      script(src='sb-admin/vendor/chart.js/Chart.min.js')
+      script(src='sb-admin/vendor/datatables/jquery.dataTables.js')
+      script(src='sb-admin/vendor/datatables/dataTables.bootstrap4.js')
+
+      include includes/js/custom.pug
+
+    // Custom scripts for this page
+      script(src='sb-admin/js/sb-admin-datatables.min.js')
+      script(src='sb-admin/js/sb-admin-charts.min.js')

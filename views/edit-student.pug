@@ -1,61 +1,105 @@
 doctype html
 html(lang='en')
+
   head
     meta(charset='utf-8')
-    meta(name='viewport', content='width=device-width, initial-scale=1')
-    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css')
-    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js')
-    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js')
-  body
-    .container
-      h1(style='margin-bottom: 30px') Edit Data Student
-      form(action='/edit-student', method='POST')
-        .row.form-group
-          .col-4
-            label(for='student_id') Student ID:
-          .col-6
-            input.form-control(type='text', name='student_id', value=student_id readonly)
-        .row.form-group
-          .col-4
-            label(for='firstname') First Name:
-          .col-6
-            input.form-control(type='text', name='first_name', value=first_name)
-        .row.form-group
-          .col-4
-            label(for='lastname') Last Name:
-          .col-6
-            input.form-control(type='text', name='lastname', value=lastname)
-        .row.form-group
-          .col-4
-            label(for='address') Address:
-          .col-6
-            input.form-control(type='text', name='address', value=address)
-        .row.form-group
-          .col-4
-            label(for='date_of_birth') Date of Birth:
-          .col-6
-            input.form-control(type='text', name='date_of_birth' value=date_of_birth)
-        .row.form-group
-          .col-4
-            label(for='gender') Gender:
-          .col-6
-            .radio
-              label
-                input(type='radio', name='gender', value='F' checked=gender=='F')
-                |  Female
-            .radio
-              label
-                input(type='radio', name='gender', value='M' checked=gender=='M')
-                |  Male
-        .row.form-group
-          .col-4
-            label(for='major') Major:
-          .col-6
-            input.form-control(type='text', name='major', value=major)
-        .row.form-group
-          .col-4
-            label(for='student_email') Student Email:
-          .col-6
-            input.form-control(type='email', name='student_email', value=student_email)
-        input.btn.btn-primary(type='submit', value='Edit')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    meta(name='description', content='')
+    meta(name='author', content='')
+    // script(defer='', src='https://use.fontawesome.com/releases/v5.0.8/js/all.js')
+    
+    title Student Database
+
+    include includes/css/core.pug
+
+    // Page level plugin CSS
+    link(href='sb-admin/vendor/datatables/dataTables.bootstrap4.css', rel='stylesheet')
+
+    include includes/css/custom.pug
+
+  body#page-top.fixed-nav.sticky-footer.bg-dark
+    include includes/navbar.pug
+    .content-wrapper
+      .container-fluid
+        // Breadcrumbs
+        ol.breadcrumb
+          li.breadcrumb-item
+            a(href='/dashboard') Dashboard
+          li.breadcrumb-item
+            a(href='/students') Student List
+          li.breadcrumb-item.active Edit Data Student
+        // Example DataTables Card
+        .card.mb-3
+          .card-header
+            i.fa.fa-edit
+            |  Edit Data Student
+          .card-body
+            form(action='/edit-student', method='POST')
+              .row.form-group
+                .col-4
+                  label(for='student_id') Student ID:
+                .col-6
+                  input.form-control(type='text', name='student_id', value=student_id readonly)
+              .row.form-group
+                .col-4
+                  label(for='admission_date') Admission Date:
+                .col-6
+                  input.form-control(type='date', name='admission_date', value=admission_date)
+              .row.form-group
+                .col-4
+                  label(for='name') Name:
+                .col-6
+                  input.form-control(type='text', name='name', value=name)
+              .row.form-group
+                .col-4
+                  label(for='address') Address:
+                .col-6
+                  input.form-control(type='text', name='address', value=address)
+              .row.form-group
+                .col-4
+                  label(for='date_of_birth') Date of Birth:
+                .col-6
+                  input.form-control(type='date', name='date_of_birth' value=date_of_birth)
+              .row.form-group
+                .col-4
+                  label(for='gender') Gender:
+                .col-6
+                  .radio
+                    label
+                      input(type='radio', name='gender', value='F' checked=gender=='F')
+                      |  Female
+                  .radio
+                    label
+                      input(type='radio', name='gender', value='M' checked=gender=='M')
+                      |  Male
+              .row.form-group
+                .col-4
+                  label(for='major') Major:
+                .col-6
+                  input.form-control(type='text', name='major', value=major)
+              .row.form-group
+                .col-4
+                  label(for='student_email') Student Email:
+                .col-6
+                  input.form-control(type='email', name='student_email', value=student_email)
+              input.btn.btn-primary(type='submit', value='Edit')
+      // /.container-fluid
+      // /.content-wrapper
+
+      include includes/footer.pug
+
+      include includes/scroll-to-top.pug
+
+      //include includes/modals/logout.pug
+
+      include includes/js/core.pug
+
+      // Page level plugin JavaScript
+      script(src='sb-admin/vendor/datatables/jquery.dataTables.js')
+      script(src='sb-admin/vendor/datatables/dataTables.bootstrap4.js')
+
+      include includes/js/custom.pug
+
+      // Custom scripts for this page
+      script(src='sb-admin/js/sb-admin-datatables.min.js')

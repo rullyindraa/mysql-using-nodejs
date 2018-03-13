@@ -1,4 +1,6 @@
-bin
 node_modules
-public
 routes
+public/sb-admin/pug
+public/sb-admin/scss
+public/sb-admin/.gitignore
+public/javascripts
