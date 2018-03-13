@@ -1,6 +1,7 @@
 node_modules
-routes
 public/sb-admin/pug
 public/sb-admin/scss
 public/sb-admin/.gitignore
 public/javascripts
+public/vendor/chart.javascripts
+public/vendor/datatables
