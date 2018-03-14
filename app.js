@@ -113,7 +113,7 @@ app.post('/login', passport.authenticate('local', {
   res.render('login', {'message' : req.flash('message')});
 });
 
-app.get('/logout',
+app.get('/logout', isAuthenticated,
   function(req, res){
     req.logout();
     res.redirect('/login');
@@ -152,7 +152,7 @@ function getStudentGender(rows, studentGender){
   return gender;
 }
 
-app.get('/students', function(req, res) {
+app.get('/students', isAuthenticated, function(req, res) {
   var studentList = [];
 
   // Do the query to get data.
@@ -210,7 +210,7 @@ function gChartTranspose(original) {
   return transpose;
 }
 
-app.get('/statistics', function(req, res) {
+app.get('/statistics', isAuthenticated, function(req, res) {
   var getMonth = []; getTotal = []; tempMonthTotal = []; transMonth = []; getGender = []; getGenderCount = []; tempGenderCount = []; transGend = [];
   con.query('select * from student_chart', function(err, rows, fields) {
     if (err) {
@@ -276,11 +276,11 @@ app.get('/statistics', function(req, res) {
   });
 });
 
-app.get('/input-student', (req, res) => 
+app.get('/input-student', isAuthenticated, (req, res) => 
     res.render('input-student.pug')
 );
 
-app.post('/input-student', function(req, res) {
+app.post('/input-student', isAuthenticated, function(req, res) {
   var studentList = [];
 
   var insertStudent = {
@@ -304,7 +304,7 @@ app.post('/input-student', function(req, res) {
   });
 });
 
-app.get('/:id', function(req, res){
+app.get('/:id', isAuthenticated, function(req, res){
 	con.query('SELECT * FROM students WHERE student_id = ?', [req.params.id], function(err, rows, fields) {
 		if(err) throw err;
 		
@@ -331,7 +331,7 @@ app.get('/:id', function(req, res){
 	});
 });
 
-app.post('/edit-student', function(req, res) {
+app.post('/edit-student', isAuthenticated, function(req, res) {
   var student_id = req.body.student_id;
   var admission_date = formatDateForMySQL(req.body.admission_date);
   var name = req.body.name;
@@ -347,14 +347,14 @@ app.post('/edit-student', function(req, res) {
   });
 });
 
-app.get('/delete/:id', function (req, res) {
+app.get('/delete/:id', isAuthenticated, function (req, res) {
   con.query('DELETE from students WHERE student_id = ?', [req.params.id], function (error, results, fields) {
     if (error) throw error;
     res.redirect('/students');
   });
 });
 
-app.post('/filter', function(req, res) {
+app.post('/filter', isAuthenticated, function(req, res) {
   var studentList = [];
   var keywords = req.body.keywords;
   var orderby = req.body.orderby;
@@ -397,20 +397,18 @@ app.post('/filter', function(req, res) {
   });
 });
 
-function dataAdapter(obj, cols) {
-  //const chartData=[["gender","gender_count"]];
-  const chartData = [[...cols]];
-  for (row in data) {
-    const temp = [];
-    for (prop in cols) {
-      "gender",
-      "gender_count"
-    }
-    chartData.push(temp);
-  }
-}
-
-
+// function dataAdapter(obj, cols) {
+//   //const chartData=[["gender","gender_count"]];
+//   const chartData = [[...cols]];
+//   for (row in data) {
+//     const temp = [];
+//     for (prop in cols) {
+//       "gender",
+//       "gender_count"
+//     }
+//     chartData.push(temp);
+//   }
+// }
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
