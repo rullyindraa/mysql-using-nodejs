@@ -4,11 +4,17 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-//var validators = require('express-validators');
+var flash = require('connect-flash');
+var crypto = require('crypto');
+var passport = require('passport');
+var passportLocal = require('passport-local').Strategy;
+var session = require('express-session');
+var Store = require('express-session').Store;
+var BetterMemoryStore = require('session-memory-store')(session);
+var store = new BetterMemoryStore({ expires: 60 * 60 * 1000, debug: true});
 
-
-var index = require('./routes/index');
-var users = require('./routes/users');
+//var index = require('./routes/index');
+//var users = require('./routes/users');
 
 var app = express();
 
@@ -20,7 +26,6 @@ var con = mysql.createConnection({
   password: "",
   database: "students"
 });
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -34,8 +39,85 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
-app.use('/users', users);
+//app.use('/', index);
+//app.use('/users', users);
+
+app.use(session({
+  name: 'JSESSION',
+  secret: 'MYSECRETISVERYSECRET',
+  store: store,
+  resave: true,
+  saveUninitialized: true
+}));
+
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use('local', new passportLocal({
+  usernameField: 'username',
+  passwordField: 'password',
+  passReqToCallback: true //passback entire req to callback
+}, function (req, username, password, done){
+  if (!username || !password) {
+    return done(null, false, req.flash('message', 'All fields are required.'));
+  }
+  var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
+  con.query('select * from users where username = ?', [username], function(err, rows){
+    console.log(err);
+    //console.log(rows);
+    if (err) return done(req.flash('message', err));
+    if (!rows.length) {
+      return done (null, false, req.flash('message', 'Invalid username or password'));
+    }
+    salt = salt+''+password;
+    var encPassword = crypto.createHash('sha1').update(salt).digest('hex');
+    var dbPassword = rows[0].password;
+    if (!(dbPassword == encPassword)) {
+      return done (null, false, req.flash('message', 'Invalid username or password.'));
+    }
+    return done (null, rows[0]);
+  });
+}));
+
+passport.serializeUser(function(user, done){
+  done (null, user.id);
+});
+
+passport.deserializeUser(function(id, done){
+  con.query('select * from users where id ='+ id, function(err, rows){
+    done(err, rows[0]);
+    console.log(rows);
+  });
+});
+
+function isAuthenticated(req, res, next) {
+  if (req.isAuthenticated())
+    return next();
+  res.redirect('/login');
+}
+
+app.get('/', isAuthenticated, function(req, res) {
+  res.render('index');
+});
+
+app.get('/login', function(req, res){
+  res.render('login', {'message' : req.flash('message')});
+});
+
+app.post('/login', passport.authenticate('local', {
+  successRedirect : '/',
+  failureRedirect : '/login',
+  failureFlash : true
+}), function(req, res, info){
+  res.render('login', {'message' : req.flash('message')});
+});
+
+app.get('/logout',
+  function(req, res){
+    req.logout();
+    res.redirect('/login');
+});
 
 function formatDate(date) {
   var d = new Date(date),
@@ -78,7 +160,7 @@ app.get('/students', function(req, res) {
     if (err) {
       res.status(500).json({"status_code": 500,"status_message": "internal server error"});
     } else {
-      console.log(rows);
+      //console.log(rows);
 
       // Loop check on each row
       for (var i = 0; i < rows.length; i++) {
@@ -108,9 +190,9 @@ app.get('/students', function(req, res) {
   });
 });
 
-app.get('/dashboard', (req, res) => 
-    res.render('index.pug')
-);
+//app.get('/dashboard', (req, res) => 
+    //res.render('index.pug')
+//);
 
 function gChartTranspose(original) {
   var transpose = [];
@@ -170,7 +252,7 @@ app.get('/statistics', function(req, res) {
     console.log(transMonth);
 
     var q = 'select gender, count(gender) as gender_count from students group by gender';
-    console.log(q);
+    //console.log(q);
     con.query(q, function(err, rows, fields) {
       if (err) {
         console.log(err)
@@ -224,7 +306,7 @@ app.post('/input-student', function(req, res) {
 
 app.get('/:id', function(req, res){
 	con.query('SELECT * FROM students WHERE student_id = ?', [req.params.id], function(err, rows, fields) {
-		if(err) throw err
+		if(err) throw err;
 		
 		// if user not found
 		if (rows.length <= 0) {

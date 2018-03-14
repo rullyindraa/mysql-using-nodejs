@@ -1,0 +1,27 @@
+doctype html
+html(lang='en')
+  head
+    title Sign in to Student Database
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js')
+    link(href='sb-admin/vendor/font-awesome/css/font-awesome.min.css', rel='stylesheet', type='text/css')
+  body
+    .container
+      .col-8
+        .card(style='margin-top: 150px; margin-left: 350px')
+          .card-header
+            i.fa.fa-login
+            |  Please Sign in
+          .card-body
+            form(action='/login', method='POST')
+              .form-group
+                label(for='username') Username
+                input#username.form-control(type='text', name='username', placeholder='Enter username')
+              .form-group
+                label(for='password') Password
+                input#password.form-control(type='password', name='password', placeholder='Password')
+              button.btn.btn-primary(type='submit') Submit
