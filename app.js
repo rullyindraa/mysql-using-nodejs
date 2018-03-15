@@ -13,6 +13,7 @@ var session = require('express-session');
 var Store = require('express-session').Store;
 var BetterMemoryStore = require('session-memory-store')(session);
 var store = new BetterMemoryStore({ expires: 60 * 60 * 1000, debug: true});
+var alertNode = require('alert-node');
 
 //var index = require('./routes/index');
 //var users = require('./routes/users');
@@ -121,18 +122,6 @@ app.get('/logout', isAuthenticated,
     res.redirect('/login');
 });
 
-function formatDate(date) {
-  var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear();
-
-  if (month.length < 2) month = '0' + month;
-  if (day.length < 2) day = '0' + day;
-
-  return [day, month, year].join('-');
-}
-
 function formatDateForMySQL(date) {
   var d = new Date(date),
       month = '' + (d.getMonth() + 1),
@@ -144,6 +133,7 @@ function formatDateForMySQL(date) {
 
   return [year, month, day].join('-');
 }
+
 
 function getStudentGender(rows, studentGender){
   if(studentGender === 'M'){
@@ -191,10 +181,6 @@ app.get('/students', isAuthenticated, function(req, res) {
     }
   });
 });
-
-//app.get('/dashboard', (req, res) => 
-    //res.render('index.pug')
-//);
 
 function gChartTranspose(original) {
   var transpose = [];
@@ -295,21 +281,22 @@ app.post('/input-student', isAuthenticated, function(req, res) {
     student_email: req.body.student_email
   };
 
-  var name = req.body.name;
   var date_of_birth = req.body.date_of_birth;
-
-  req.checkBody('name', 'Name is required').notEmpty();
-  req.checkBody('date_of_birth', 'Date of Birth is required').notEmpty();
-
-  // Do the query to insert data.
-  con.query('INSERT INTO students set ? ', insertStudent, function(err, rows, fields) {
-    if (err) {
-      res.status(500).json({"status_code": 500,"status_message": "internal server error"});
-    } else {
-      console.log(rows);
-    }
-    res.redirect('/students');
-  });
+  var today = new Date();
+  var newtoday = formatDateForMySQL(today);
+  if (date_of_birth < newtoday) {
+    // Do the query to insert data.
+    con.query('INSERT INTO students set ? ', insertStudent, function(err, rows, fields) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(rows);
+      }
+      res.redirect('/students');
+    });
+  } else {
+    alertNode("You can't enter date of birth in future!");
+  }
 });
 
 app.get('/:id', isAuthenticated, function(req, res){
@@ -349,10 +336,16 @@ app.post('/edit-student', isAuthenticated, function(req, res) {
   var major = req.body.major;
   var student_email = req.body.student_email;
 
-  con.query('UPDATE students SET admission_date = ?, name = ?, address = ?, date_of_birth = ?, gender = ?, major = ?, student_email = ? WHERE student_id = ?', [admission_date, name, address, date_of_birth, gender, major, student_email, student_id], function (error, results, fields) {
-    if (error) throw error;
-    res.redirect('/students');
-  });
+  var today = new Date();
+  var newtoday = formatDateForMySQL(today);
+  if (date_of_birth < newtoday) {
+    con.query('UPDATE students SET admission_date = ?, name = ?, address = ?, date_of_birth = ?, gender = ?, major = ?, student_email = ? WHERE student_id = ?', [admission_date, name, address, date_of_birth, gender, major, student_email, student_id], function (error, results, fields) {
+      if (error) throw error;
+      res.redirect('/students');
+    });
+  } else {
+    alertNode("You can't enter date of birth in future!");
+  }
 });
 
 app.get('/delete/:id', isAuthenticated, function (req, res) {
