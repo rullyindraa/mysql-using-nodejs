@@ -7,8 +7,6 @@ html(lang='en')
     meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
     meta(name='description', content='')
     meta(name='author', content='')
-    //script(src='https://code.highcharts.com/highcharts.js')
-    //script(src='https://code.highcharts.com/modules/exporting.js')
 
     script(type='text/javascript', src='https://www.gstatic.com/charts/loader.js')
     script(type='text/javascript', src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js')
@@ -65,35 +63,23 @@ html(lang='en')
           li.breadcrumb-item
             a(href='/') Dashboard
           li.breadcrumb-item.active Statistics
-        // Area Chart Example
         .card.mb-3
           .card-header
             i.fa.fa-pie-chart
             |  Gender Ratio
           .card-body
             #gender_chart.mt-4.items-center
-        // Example Pie Chart Card
         .card.mb-3
           .card-header
             i.fa.fa-line-chart
             |  Student Chart
           .card-body
             #student_chart.mt-4.items-center
-      // /.container-fluid
-      // /.content-wrapper
 
       include includes/footer.pug
 
       include includes/scroll-to-top.pug
 
-      //include includes/modals/logout.pug
-
       include includes/js/core.pug
 
-      // Page level plugin JavaScript
-      //script(src='sb-admin/vendor/chart.js/Chart.min.js')
-
       include includes/js/custom.pug
-
-      // Custom scripts for this page
-      //script(src='sb-admin/js/sb-admin-charts.min.js')

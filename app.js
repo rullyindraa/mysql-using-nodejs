@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var expressValidator = require('express-validator');
 var flash = require('connect-flash');
 var crypto = require('crypto');
 var passport = require('passport');
@@ -38,6 +39,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(expressValidator());
 
 //app.use('/', index);
 //app.use('/users', users);
@@ -87,7 +89,7 @@ passport.serializeUser(function(user, done){
 passport.deserializeUser(function(id, done){
   con.query('select * from users where id ='+ id, function(err, rows){
     done(err, rows[0]);
-    console.log(rows);
+    //console.log(rows);
   });
 });
 
@@ -292,6 +294,12 @@ app.post('/input-student', isAuthenticated, function(req, res) {
     major: req.body.major,
     student_email: req.body.student_email
   };
+
+  var name = req.body.name;
+  var date_of_birth = req.body.date_of_birth;
+
+  req.checkBody('name', 'Name is required').notEmpty();
+  req.checkBody('date_of_birth', 'Date of Birth is required').notEmpty();
 
   // Do the query to insert data.
   con.query('INSERT INTO students set ? ', insertStudent, function(err, rows, fields) {
