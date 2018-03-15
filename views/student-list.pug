@@ -12,9 +12,6 @@ html(lang='en')
 
     include includes/css/core.pug
 
-    // Page level plugin CSS
-    link(href='sb-admin/vendor/datatables/dataTables.bootstrap4.css', rel='stylesheet')
-
     include includes/css/custom.pug
 
   body#page-top.fixed-nav.sticky-footer.bg-dark
@@ -42,9 +39,10 @@ html(lang='en')
                       .form-group
                         select.form-control(name="orderby")
                           option(name='oderby', value="oderby") Order By
-                          option(name='student_id', value="student_id") ID
+                          option(name='student_id', value="student_id") Student ID
                           option(name='name', value="name") Name
                           option(name='address', value="address") Address
+                          option(name='major', value="major") Major
                           option(name='student_email', value="student_email") Student Email
                     .col-3
                       .form-group
@@ -55,7 +53,7 @@ html(lang='en')
                       input.btn.btn-dark(type='submit', value='Filter')
                 thead
                   tr
-                    th ID
+                    th Student ID
                     th Admission Date
                     th Name
                     th Address
@@ -120,11 +118,4 @@ html(lang='en')
 
       include includes/js/core.pug
 
-      // Page level plugin JavaScript
-      script(src='sb-admin/vendor/datatables/jquery.dataTables.js')
-      script(src='sb-admin/vendor/datatables/dataTables.bootstrap4.js')
-
       include includes/js/custom.pug
-
-      // Custom scripts for this page
-      script(src='sb-admin/js/sb-admin-datatables.min.js')

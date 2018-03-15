@@ -29,9 +29,6 @@ html(lang='en')
 
     include includes/css/core.pug
 
-    // Page level plugin CSS
-    link(href='sb-admin/vendor/datatables/dataTables.bootstrap4.css', rel='stylesheet')
-
     include includes/css/custom.pug
 
   body#page-top.fixed-nav.sticky-footer.bg-dark
@@ -51,6 +48,9 @@ html(lang='en')
             |  Edit Data Student
           .card-body
             form.needs-validation(action='/edit-student', method='POST', novalidate='')
+              .row.form-group
+                .col-6
+                  input.form-control(type='hidden', name='id', value=id readonly)
               .row.form-group
                 .col-4
                   label(for='student_id') Student ID:
@@ -118,11 +118,4 @@ html(lang='en')
 
       include includes/js/core.pug
 
-      // Page level plugin JavaScript
-      script(src='sb-admin/vendor/datatables/jquery.dataTables.js')
-      script(src='sb-admin/vendor/datatables/dataTables.bootstrap4.js')
-
       include includes/js/custom.pug
-
-      // Custom scripts for this page
-      script(src='sb-admin/js/sb-admin-datatables.min.js')

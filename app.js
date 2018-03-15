@@ -42,9 +42,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressValidator());
 
-//app.use('/', index);
-//app.use('/users', users);
-
 app.use(session({
   name: 'JSESSION',
   secret: 'MYSECRETISVERYSECRET',
@@ -162,6 +159,7 @@ app.get('/students', isAuthenticated, function(req, res) {
 
         // Create an object to save current row's data
         var student = {
+          'id': rows[i].id,
           'student_id':rows[i].student_id,
           'admission_date':admission_date,
           'name':rows[i].name,
@@ -272,6 +270,7 @@ app.post('/input-student', isAuthenticated, function(req, res) {
   var studentList = [];
 
   var insertStudent = {
+    student_id: req.body.student_id,
     admission_date: req.body.admission_date,
     name: req.body.name,
     address: req.body.address,
@@ -281,39 +280,43 @@ app.post('/input-student', isAuthenticated, function(req, res) {
     student_email: req.body.student_email
   };
 
+  var student_id = req.body.student_id;
   var date_of_birth = req.body.date_of_birth;
   var today = new Date();
   var newtoday = formatDateForMySQL(today);
-  if (date_of_birth < newtoday) {
-    // Do the query to insert data.
-    con.query('INSERT INTO students set ? ', insertStudent, function(err, rows, fields) {
+  
+    con.query('select * from students where student_id = ?', student_id, function(err, rows, fields) {
       if (err) {
         console.log(err);
+      } else if (rows.length > 0) {
+        alertNode('You entered duplicate Student ID!');
+      } else if (date_of_birth > newtoday) {
+        alertNode("You can't enter date of birth in future!");
       } else {
-        console.log(rows);
+        // Do the query to insert data.
+        con.query('INSERT INTO students set ? ', insertStudent, function(err, rows, fields) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(rows);
+          }
+          res.redirect('/students');
+        });
       }
-      res.redirect('/students');
     });
-  } else {
-    alertNode("You can't enter date of birth in future!");
-  }
 });
 
-app.get('/:id', isAuthenticated, function(req, res){
-	con.query('SELECT * FROM students WHERE student_id = ?', [req.params.id], function(err, rows, fields) {
-		if(err) throw err;
-		
-		// if user not found
+app.get('/:id', isAuthenticated, function(req, res) {
+  con.query('SELECT * FROM students WHERE student_id = ?', [req.params.id], function(err, rows, fields) {
+    if(err) throw err;
 		if (rows.length <= 0) {
-				res.redirect('/students')
-		} else { 
+      res.redirect('/students')
+    } else { 
       var student_admission_date = formatDateForMySQL(rows[0].admission_date);
-			var studentDoB = formatDateForMySQL(rows[0].date_of_birth);
-			// if user found
-			// render to views/index.pug template file
-			res.render('edit-student', {
-				//data: rows[0],
-				student_id: rows[0].student_id,
+      var studentDoB = formatDateForMySQL(rows[0].date_of_birth);
+      res.render('edit-student', {
+        id: rows[0].id,
+        student_id: rows[0].student_id,
         admission_date: student_admission_date,
         name: rows[0].name,
         address: rows[0].address,
@@ -321,12 +324,13 @@ app.get('/:id', isAuthenticated, function(req, res){
         gender: rows[0].gender,
         major: rows[0].major,
         student_email: rows[0].student_email
-			})
-		}            
-	});
+      })
+    }
+  });
 });
 
 app.post('/edit-student', isAuthenticated, function(req, res) {
+  var id = req.body.id;
   var student_id = req.body.student_id;
   var admission_date = formatDateForMySQL(req.body.admission_date);
   var name = req.body.name;
@@ -339,7 +343,7 @@ app.post('/edit-student', isAuthenticated, function(req, res) {
   var today = new Date();
   var newtoday = formatDateForMySQL(today);
   if (date_of_birth < newtoday) {
-    con.query('UPDATE students SET admission_date = ?, name = ?, address = ?, date_of_birth = ?, gender = ?, major = ?, student_email = ? WHERE student_id = ?', [admission_date, name, address, date_of_birth, gender, major, student_email, student_id], function (error, results, fields) {
+    con.query('UPDATE students SET id = ?, admission_date = ?, name = ?, address = ?, date_of_birth = ?, gender = ?, major = ?, student_email = ? WHERE student_id = ?', [id, admission_date, name, address, date_of_birth, gender, major, student_email, student_id], function (error, results, fields) {
       if (error) throw error;
       res.redirect('/students');
     });
@@ -378,6 +382,7 @@ app.post('/filter', isAuthenticated, function(req, res) {
 
         // Create an object to save current row's data
         var student = {
+          'id':rows[i].id,
           'student_id':rows[i].student_id,
           'admission_date':student_admission_date,
           'name':rows[i].name,
