@@ -1,14 +1,16 @@
 # MySQL Using Node.js
 This is a simple project about Student Database using
- - MySQL
- - Node.js using `Express`
- - Template SB Admin Bootstrap
- - Draw chart using `Google Chart`
+ - MySQL as database.
+ - Template SB Admin Bootstrap.
+ - `Express` as Node.js Web Framework.
+ - `Google Chart` to draw statistics.
 
 ## Feature
-1. CRUD (Create, Retrieve, Update, Delete) students.
-2. Filter by keywords, ID, name, address, and email of students.
-3. Statistics about gender ratio and total of students per Month.
+1. Authentication using `passport`.
+2. CRUD (Create, Retrieve, Update, Delete) students.
+3. Form validations.
+4. Filter by keywords, ID, name, address, and email of students.
+5. Statistics about gender ratio and total of students per Month.
 
 ## Requirements
  - Node.js (latest version).
