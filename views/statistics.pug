@@ -78,14 +78,19 @@ html(lang='en')
             i.fa.fa-line-chart
             |  Student Chart
           .card-body
-            .dropdown 
-            .btn-group(role='group')
-              button.btn.btn-secondary.dropdown-toggle(type='button', data-toggle='dropdown')
-                | Year
-              .dropdown-menu
-                a.dropdown-item(href='2014') 2014
-                a.dropdown-item(href='2015') 2015
-                a.dropdown-item(href='2016') 2016
+            form(action='/statistics', method='GET')
+              .form-row
+                .col-2
+                  .form-group
+                    select#year.form-control(name="year")
+                      option#year(name="year", value="2018") 2018
+                      option#year(name="year", value="2017") 2017
+                      option#year(name="year", value="2016") 2016
+                      option#year(name="year", value="2015") 2015
+                      option#year(name="year", value="2014") 2014
+                      option#year(name="year", value="2013") 2013
+                .col-1
+                  input.btn.btn-dark(type='submit', value='Search')
                       
             #student_chart.mt-4.items-center
 

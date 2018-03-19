@@ -63,7 +63,7 @@ passport.use('local', new passportLocal({
   if (!username || !password) {
     return done(null, false, req.flash('message', 'All fields are required.'));
   }
-  //var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
+  var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
   con.query('select * from users where username = ?', [username], function(err, rows){
     console.log(err);
     console.log(rows);
@@ -71,8 +71,8 @@ passport.use('local', new passportLocal({
     if (!rows.length) {
       return done (null, false, req.flash('message', 'Invalid username or password'));
     }
-    //salt = salt+''+password;
-    var encPassword = crypto.createHash('sha1').update(password).digest('hex');
+    salt = salt+''+password;
+    var encPassword = crypto.createHash('sha1').update(salt).digest('hex');
     var dbPassword = rows[0].password;
     if (!(dbPassword == encPassword)) {
       return done (null, false, req.flash('message', 'Invalid username or password.'));
@@ -118,19 +118,31 @@ app.get('/add-user', function(req, res) {
 });
 
 app.post('/add-user', function(req, res) {
-  var pass= req.body.password;
+  var pass = req.body.password;
+  var username = req.body.username;
+  var email = req.body.email;
   var insertUsers = {
     username: req.body.username,
     email: req.body.email,
-    password: crypto.createHash('sha1').update(pass).digest('hex')
+    password: crypto.createHash('sha1').update(pass).digest('hex'),
+    resetPasswordToken: undefined,
+    resetPasswordExpires: undefined
   };
-  con.query('INSERT INTO users set ? ', insertUsers, function(err, rows, fields) {
+  con.query('select * from users where username = ? OR email = ?', [username, email], function(err, rows, fields) {
     if (err) {
-      console.log(err);
+    console.log(err);
+    } else if (rows.length > 0) {
+      alertNode('You entered duplicate username or email!');
     } else {
-      console.log(rows);
+      con.query('INSERT INTO users set ? ', insertUsers, function(err, rows, fields) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log(rows);
+        }
+        res.redirect('/');
+      });
     }
-    res.redirect('/');
   });
 });
 
@@ -155,12 +167,9 @@ app.post('/forgot', function(req, res, next) {
           req.flash('error', 'No account with that email address exists.');
           return res.redirect('/forgot');
         } else {
-          var email = rows[0].email;
-          console.log(email);
-          var pwdToken = rows[0].resetPasswordToken;
+          var email = req.body.email;
           var pwdToken = token;
-          console.log(pwdToken);
-          var pwdExp = rows[0].resetPasswordExpires; 
+          console.log(token);
           var pwdExp = new moment().add(10, 'm').toDate();
           console.log(pwdExp);
           
@@ -173,7 +182,7 @@ app.post('/forgot', function(req, res, next) {
     },
     function(token, rows, done) {
       const sgMail = require('@sendgrid/mail');
-      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+      sgMail.setApiKey('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');
       const msg = {
         to: [req.body.email],
         from: 'passwordreset@student.com',
@@ -199,11 +208,12 @@ app.post('/forgot', function(req, res, next) {
 });
 
 app.get('/reset/:token', function(req, res) {
-  con.query('SELECT * FROM users WHERE resetPasswordToken = ?', [req.params.token], function(err, user) {
-    if (!user) {
+  con.query('SELECT * FROM users WHERE resetPasswordToken = ?', [req.params.token], function(err, rows) {
+    if (rows.length <= 0) {
       req.flash('error', 'Password reset token is invalid or has expired.');
       return res.redirect('/forgot');
     }
+    // }
     res.render('reset');
   });
 });
@@ -218,22 +228,30 @@ app.post('/reset/:token', function(req, res) {
           return res.redirect('/forgot');
         }
         var email = rows[0].email;
-        var pass = req.body.password;
+        var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
+        var password = req.body.password;
+        var pass = salt+''+password;
         var pwd = crypto.createHash('sha1').update(pass).digest('hex')
-        console.log(pwd);
         var resetPasswordToken = undefined;
-        console.log(resetPasswordToken)
         var resetPasswordExpires = undefined;
 
-        con.query('UPDATE users set password = ?, resetPasswordToken = ?, resetPasswordExpires = ? WHERE email = ?', [pwd, resetPasswordToken, resetPasswordExpires, email], function(err, rows) {
-          done(err, rows);
+        con.query('UPDATE users set password = ?, resetPasswordToken = ?, resetPasswordExpires = ? WHERE email = ?', [pwd, resetPasswordToken, resetPasswordExpires, email], function(err) {
+          if(err) {
+            throw err;
+          } else {
+            req.flash('success', 'Success! Your password has been changed.');
+          }
           console.log(rows);
+        });
+
+        con.query("select * from users where email = '"+rows[0].email+"'", function(err, rows) {
+          done(err, rows);
         });
       });
     },
     function(rows, done) {
       const sgMail = require('@sendgrid/mail');
-      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+      sgMail.setApiKey('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');
       const msg = {
         to: [req.body.email],
         from: 'passwordreset@student.com',
@@ -249,7 +267,8 @@ app.post('/reset/:token', function(req, res) {
       });
     }
   ], function(err) {
-    res.redirect('/');
+    console.log(err);
+    res.redirect('/reset');
   })
 })
 
@@ -334,49 +353,48 @@ function gChartTranspose(original) {
   return transpose;
 }
 
-app.get('/students/statistics/:year', function(req, res) {
-  var getMonth = ['month', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']; 
-  var getTotal = ['Total', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; 
+app.get('/statistics', function(req, res) {
   var tempMonthTotal = []; transMonth = []; getGender = []; getGenderCount = []; tempGenderCount = []; transGend = [];
-  //var year = req.body.year;
-  var q = 'select month(admission_date) as month, count(id) as Total from students where year(admission_date) = '+[req.params.year]+' group by month(admission_date)';
-  console.log(q);
+  var q = 'select gender, count(gender) as gender_count from students group by gender';
+  //console.log(q);
   con.query(q, function(err, rows, fields) {
-    //console.log(rows);
     if (err) {
       console.log(err)
     } else {
+    getGender.push('gender')
+    getGenderCount.push('gender_count')
       for (var j = 0; j < rows.length; j++) {
-        var month = rows[j].month;
-        getTotal.fill(rows[j].Total, month, month+1)
-      } 
-      //console.log(getMonth);
-      //console.log(getTotal);
-      tempMonthTotal.push(getMonth, getTotal) 
+        if (rows[j].gender === 'F') {
+          getGender.push('Female')
+        } else {
+          getGender.push('Male')
+        }
+        getGenderCount.push(rows[j].gender_count)
+      }
+      tempGenderCount.push(getGender, getGenderCount)
     }
-    var transMonth = gChartTranspose(tempMonthTotal);
-    console.log(transMonth);
-
-    var q = 'select gender, count(gender) as gender_count from students group by gender';
-    //console.log(q);
+    var transGend = gChartTranspose(tempGenderCount);
+    console.log(transGend);
+    var getMonth = ['month', 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']; 
+    var getTotal = ['Total', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]; 
+    //var year = req.body.year;
+    var q = 'select month(admission_date) as month, count(id) as Total from students where year(admission_date) = '+[req.query.year]+' group by month(admission_date)';
+    console.log(q);
     con.query(q, function(err, rows, fields) {
+      //console.log(rows);
       if (err) {
         console.log(err)
       } else {
-        getGender.push('gender')
-        getGenderCount.push('gender_count')
         for (var j = 0; j < rows.length; j++) {
-          if (rows[j].gender === 'F') {
-            getGender.push('Female')
-          } else {
-            getGender.push('Male')
-          }
-          getGenderCount.push(rows[j].gender_count)
-        }
-        tempGenderCount.push(getGender, getGenderCount)
+          var month = rows[j].month;
+          getTotal.fill(rows[j].Total, month, month+1)
+        } 
+        //console.log(getMonth);
+        //console.log(getTotal);
+        tempMonthTotal.push(getMonth, getTotal) 
       }
-      var transGend = gChartTranspose(tempGenderCount);
-      console.log(transGend);
+      var transMonth = gChartTranspose(tempMonthTotal);
+      console.log(transMonth);
       res.render('statistics', {obj1: JSON.stringify(transGend), obj2: JSON.stringify(transMonth)});
     })
   });
