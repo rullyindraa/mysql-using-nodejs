@@ -9,4 +9,5 @@ public/sb-admin/scss
 public/sb-admin/.gitignore
 public/javascripts
 public/vendor/chart.javascripts
-public/vendor/datatablessendgrid.env
+public/vendor/datatables
+sendgrid.env
