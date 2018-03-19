@@ -8,6 +8,15 @@ html(lang='en')
     meta(name='description', content='')
     meta(name='author', content='')
 
+    include includes/css/core.pug
+
+    include includes/css/custom.pug
+
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css', integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm', crossorigin='anonymous')
+    script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js', integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN', crossorigin='anonymous')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js', integrity='sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q', crossorigin='anonymous')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js', integrity='sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl', crossorigin='anonymous')
+
     script(type='text/javascript', src='https://www.gstatic.com/charts/loader.js')
     script(type='text/javascript', src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js')
     script(type='text/javascript').
@@ -20,7 +29,6 @@ html(lang='en')
         
       function drawChart() { 
         
-            
         // Create our data table out of JSON data loaded from server.
         var data1 = new google.visualization.arrayToDataTable(!{obj1});
 
@@ -38,7 +46,7 @@ html(lang='en')
                 // Create our data table out of JSON data loaded from server.
         var data2 = new google.visualization.arrayToDataTable(!{obj2});
 
-        var options2 = {'title':'Total of Students in 2014',
+        var options2 = {'title':'Total of Students',
                        'width':1000,
                        'height':600};
 
@@ -49,11 +57,7 @@ html(lang='en')
       }
 
     title Student Database
-
-    include includes/css/core.pug
-
-    include includes/css/custom.pug
-
+    
   body#page-top.fixed-nav.sticky-footer.bg-dark
     include includes/navbar.pug
     .content-wrapper
@@ -74,6 +78,15 @@ html(lang='en')
             i.fa.fa-line-chart
             |  Student Chart
           .card-body
+            .dropdown 
+            .btn-group(role='group')
+              button.btn.btn-secondary.dropdown-toggle(type='button', data-toggle='dropdown')
+                | Year
+              .dropdown-menu
+                a.dropdown-item(href='2014') 2014
+                a.dropdown-item(href='2015') 2015
+                a.dropdown-item(href='2016') 2016
+                      
             #student_chart.mt-4.items-center
 
       include includes/footer.pug

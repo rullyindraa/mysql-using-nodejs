@@ -1,7 +1,7 @@
 doctype html
 html(lang='en')
   head
-    title Sign in to Student Database
+    title Forgot Password
     meta(charset='utf-8')
     meta(name='viewport', content='width=device-width, initial-scale=1')
     link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css')
@@ -30,13 +30,18 @@ html(lang='en')
   body
     .container
       .wrapper
-        form.form-signin(action='/login', method='POST')
-          h2.form-signin-heading(align='center', style="margin-bottom: 30px; margin-top: 20px;") Please Login
-          input.form-control(type='text', name='username', placeholder='Username', required='')
-          input.form-control(type='password', name='password', placeholder='Password', required='', style='margin-top: 20px')
+        form.form-signin(action='/forgot', method='POST')
+          h2.form-signin-heading(align='center', style="margin-bottom: 30px; margin-top: 20px;") Forgot Password
+          input.form-control(type='email', name='email', placeholder='Email', required='')
+          if messages.error
+            .alert.alert-danger(style="margin-top: 30px;")
+              div= messages.error
+          if messages.info
+            .alert.alert-info(style="margin-top: 30px;")
+              div= messages.info
+          if messages.success
+            .alert.alert-success(style="margin-top: 30px;")
+              div= messages.success
           br
-          a(href='/forgot', style='margin-bottom: 20px;') Forgot Password?
-          br
-          br
-          button.btn.btn-lg.btn-primary.btn-block(type='submit') Login
+          button.btn.btn-lg.btn-primary.btn-block(type='submit') Reset Password
 
