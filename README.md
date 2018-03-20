@@ -4,6 +4,7 @@ This is a simple project about Student Database using
  - Template SB Admin Bootstrap.
  - `Express` as Node.js Web Framework.
  - `Google Chart` to draw statistics.
+ - `SendGrid` as email delivery service.
 
 ## Feature
 1. Authentication using `passport`.
@@ -20,5 +21,6 @@ This is a simple project about Student Database using
  - Clone the Repository.
  - Import students.sql in your database.
  - Run `npm install`.
+ - Create your SendGrid API Key at [SendGrid](https://sendgrid.com/).
  - Run `npm start`.
  - Run `http://localhost:3000/`in your browser.
