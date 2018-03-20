@@ -18,7 +18,11 @@ var store = new BetterMemoryStore({ expires: 60 * 60 * 1000, debug: true});
 var alertNode = require('alert-node');
 var jwt = require('jsonwebtoken');
 var moment = require('moment');
+moment().format();
 
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+      
 var app = express();
 
 var mysql = require('mysql');
@@ -98,7 +102,11 @@ function isAuthenticated(req, res, next) {
 }
 
 app.get('/', function(req, res) {
-  res.render('index');
+  if (req.isAuthenticated()) {
+    res.render('index');
+  } else {
+    res.render('login');
+  }
 });
 
 app.get('/login', function(req, res) {
@@ -118,15 +126,15 @@ app.get('/add-user', function(req, res) {
 });
 
 app.post('/add-user', function(req, res) {
-  var pass = req.body.password;
+  var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
+  var password = req.body.password;
+  var pass = salt+''+password;
   var username = req.body.username;
   var email = req.body.email;
   var insertUsers = {
     username: req.body.username,
     email: req.body.email,
-    password: crypto.createHash('sha1').update(pass).digest('hex'),
-    resetPasswordToken: undefined,
-    resetPasswordExpires: undefined
+    password: crypto.createHash('sha1').update(pass).digest('hex')
   };
   con.query('select * from users where username = ? OR email = ?', [username, email], function(err, rows, fields) {
     if (err) {
@@ -181,8 +189,6 @@ app.post('/forgot', function(req, res, next) {
       });
     },
     function(token, rows, done) {
-      const sgMail = require('@sendgrid/mail');
-      sgMail.setApiKey('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');
       const msg = {
         to: [req.body.email],
         from: 'passwordreset@student.com',
@@ -233,7 +239,7 @@ app.post('/reset/:token', function(req, res) {
         var pass = salt+''+password;
         var pwd = crypto.createHash('sha1').update(pass).digest('hex')
         var resetPasswordToken = undefined;
-        var resetPasswordExpires = undefined;
+        var resetPasswordExpires = null;
 
         con.query('UPDATE users set password = ?, resetPasswordToken = ?, resetPasswordExpires = ? WHERE email = ?', [pwd, resetPasswordToken, resetPasswordExpires, email], function(err) {
           if(err) {
@@ -250,9 +256,7 @@ app.post('/reset/:token', function(req, res) {
       });
     },
     function(rows, done) {
-      const sgMail = require('@sendgrid/mail');
-      sgMail.setApiKey('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');
-      const msg = {
+      const msgReset = {
         to: [req.body.email],
         from: 'passwordreset@student.com',
         subject: 'Your password has been changed',
@@ -261,7 +265,7 @@ app.post('/reset/:token', function(req, res) {
         html: 'Hello,<br><br>' +
         'This is a confirmation that the password for your account ' + req.body.email + ' has just been changed.<br>',
       };
-      sgMail.send(msg, function(err) {
+      sgMail.send(msgReset, function(err) {
         req.flash('success', 'Success! Your password has been changed.');
         done(err, 'done');
       });
@@ -272,10 +276,13 @@ app.post('/reset/:token', function(req, res) {
   })
 })
 
-app.get('/logout', isAuthenticated,
-  function(req, res){
+app.get('/logout', function(req, res){
+  if(!req.isAuthenticated()){
+    notFound404(req, res, next);
+  } else {
     req.logout();
     res.redirect('/login');
+  }
 });
 
 function formatDateForMySQL(date) {

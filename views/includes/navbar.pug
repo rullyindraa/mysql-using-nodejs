@@ -16,7 +16,7 @@ nav#mainNav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top
           span.nav-link-text
             | Statistics
       li.nav-item(data-toggle='tooltip', data-placement='right', title='Students')
-        a.nav-link.nav-link-collapse.collapsed(data-toggle='collapse', href='#collapseStudents', data-parent='#exampleAccordion')
+        a.nav-link.nav-link-collapse.collapsed(data-toggle='collapse', href='#collapseStudents', aria-expanded="false" aria-controls="collapseStudents", data-parent='#exampleAccordion')
           i.fa.fa-fw.fa-table
           span.nav-link-text
             | Students
@@ -26,7 +26,7 @@ nav#mainNav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top
           li
             a(href='/input-student') Input New Student
       li.nav-item(data-toggle='tooltip', data-placement='right', title='Students')
-        a.nav-link.nav-link-collapse.collapsed(data-toggle='collapse', href='#collapseUsers', data-parent='#exampleAccordion')
+        a.nav-link.nav-link-collapse.collapsed(data-toggle='collapse', href='#collapseUsers', aria-expanded="false", aria-controls="collapseUsers", data-parent='#exampleAccordion')
           i.fa.fa-fw.fa-user
           span.nav-link-text
             | Users
