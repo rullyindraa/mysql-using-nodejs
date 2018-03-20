@@ -121,11 +121,11 @@ app.post('/login', passport.authenticate('local', {
   res.render('login', {'message' : req.flash('message')});
 });
 
-app.get('/add-user', function(req, res) {
+app.get('/add-user', isAuthenticated, function(req, res) {
   res.render('add-user', {'message' : req.flash('message')});
 });
 
-app.post('/add-user', function(req, res) {
+app.post('/add-user', isAuthenticated, function(req, res) {
   var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
   var password = req.body.password;
   var pass = salt+''+password;
@@ -154,11 +154,11 @@ app.post('/add-user', function(req, res) {
   });
 });
 
-app.get('/forgot', function(req, res) {
+app.get('/forgot', isAuthenticated, function(req, res) {
   res.render('forgot');
 });
 
-app.post('/forgot', function(req, res, next) {
+app.post('/forgot', isAuthenticated, function(req, res, next) {
   async.waterfall([
     function(done) {
       crypto.randomBytes(20, function(err, buf) {
@@ -359,7 +359,7 @@ function gChartTranspose(original) {
   return transpose;
 }
 
-app.get('/statistics', function(req, res) {
+app.get('/statistics', isAuthenticated, function(req, res) {
   var tempMonthTotal = []; transMonth = []; getGender = []; getGenderCount = []; tempGenderCount = []; transGend = [];
   var q = 'select gender, count(gender) as gender_count from students group by gender';
   //console.log(q);
