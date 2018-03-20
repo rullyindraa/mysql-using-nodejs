@@ -47,7 +47,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(expressValidator());
 
-app.use(session({
+app.use(session( {
   name: 'JSESSION',
   secret: 'MYSECRETISVERYSECRET',
   store: store,
@@ -59,16 +59,16 @@ app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.use('local', new passportLocal({
+passport.use('local', new passportLocal( {
   usernameField: 'username',
   passwordField: 'password',
   passReqToCallback: true //passback entire req to callback
-}, function (req, username, password, done){
+}, function (req, username, password, done) {
   if (!username || !password) {
     return done(null, false, req.flash('message', 'All fields are required.'));
   }
   var salt = '7fa73b47df808d36c5fe328546ddef8b9011b2c6';
-  con.query('select * from users where username = ?', [username], function(err, rows){
+  con.query('select * from users where username = ?', [username], function(err, rows) {
     console.log(err);
     console.log(rows);
     if (err) return done(req.flash('message', err));
@@ -85,11 +85,11 @@ passport.use('local', new passportLocal({
   });
 }));
 
-passport.serializeUser(function(user, done){
+passport.serializeUser(function(user, done) {
   done (null, user.id);
 });
 
-passport.deserializeUser(function(id, done){
+passport.deserializeUser(function(id, done) {
   con.query('select * from users where id ='+ id, function(err, rows){
     done(err, rows[0]);
   });
@@ -117,7 +117,7 @@ app.post('/login', passport.authenticate('local', {
   successRedirect : '/',
   failureRedirect : '/login',
   failureFlash : true
-}), function(req, res, info){
+}), function(req, res, info) {
   res.render('login', {'message' : req.flash('message')});
 });
 
@@ -219,7 +219,6 @@ app.get('/reset/:token', function(req, res) {
       req.flash('error', 'Password reset token is invalid or has expired.');
       return res.redirect('/forgot');
     }
-    // }
     res.render('reset');
   });
 });
@@ -276,8 +275,8 @@ app.post('/reset/:token', function(req, res) {
   })
 })
 
-app.get('/logout', function(req, res){
-  if(!req.isAuthenticated()){
+app.get('/logout', function(req, res) {
+  if(!req.isAuthenticated()) {
     notFound404(req, res, next);
   } else {
     req.logout();
@@ -297,8 +296,8 @@ function formatDateForMySQL(date) {
   return [year, month, day].join('-');
 }
 
-function getStudentGender(rows, studentGender){
-  if(studentGender === 'M'){
+function getStudentGender(rows, studentGender) {
+  if(studentGender === 'M') {
     gender = 'Male';
   } else {
     gender = 'Female';
@@ -402,7 +401,7 @@ app.get('/statistics', function(req, res) {
       }
       var transMonth = gChartTranspose(tempMonthTotal);
       console.log(transMonth);
-      res.render('statistics', {obj1: JSON.stringify(transGend), obj2: JSON.stringify(transMonth)});
+      res.render('statistics', { obj1: JSON.stringify(transGend), obj2: JSON.stringify(transMonth) });
     })
   });
 });
@@ -453,7 +452,7 @@ app.post('/input-student', isAuthenticated, function(req, res) {
 
 app.get('/:id', isAuthenticated, function(req, res) {
   con.query('SELECT * FROM students WHERE student_id = ?', [req.params.id], function(err, rows, fields) {
-    if(err) throw err;
+    if (err) throw err;
 		if (rows.length <= 0) {
       res.redirect('/students')
     } else { 
