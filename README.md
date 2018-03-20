@@ -22,4 +22,3 @@ This is a simple project about Student Database using
  - Run `npm install`.
  - Run `npm start`.
  - Run `http://localhost:3000/`in your browser.
- - Sign in with **rully** as username and **rully** as password. Or you can just add into users table with your name as username and password `7fa73b47df808d36c5fe328546ddef8b9011b2c6`+yourpassword with sha1 function.
