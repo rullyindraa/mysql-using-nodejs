@@ -7,7 +7,12 @@ html(lang='en')
     meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
     meta(name='description', content='')
     meta(name='author', content='')
-    
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js')
+    link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css')
+
     script.
       (function() {
         'use strict';
@@ -27,14 +32,10 @@ html(lang='en')
 
     title Student Database
 
-    include includes/css/core.pug
-
-    include includes/css/custom.pug
-
-  body#page-top.fixed-nav.sticky-footer.bg-dark
+  body#page-top.fixed-nav.sticky-footer
     include includes/navbar.pug
     .content-wrapper
-      .container-fluid
+      .container
         // Breadcrumbs
         ol.breadcrumb
           li.breadcrumb-item
@@ -47,7 +48,7 @@ html(lang='en')
             i.fa.fa-edit
             |  Edit Data Student
           .card-body
-            form.needs-validation(action='/edit-student', method='POST', novalidate='')
+            form.needs-validation(action='/students/edit', method='POST', novalidate='')
               .row.form-group
                 .col-6
                   input.form-control(type='hidden', name='id', value=id readonly)
@@ -111,11 +112,3 @@ html(lang='en')
                   .invalid-feedback
                     | Please enter your student email
               input.btn.btn-primary(type='submit', value='Edit')
-
-      include includes/footer.pug
-
-      include includes/scroll-to-top.pug
-
-      include includes/js/core.pug
-
-      include includes/js/custom.pug

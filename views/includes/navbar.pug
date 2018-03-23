@@ -1,40 +1,20 @@
-// Navigation
-nav#mainNav.navbar.navbar-expand-lg.navbar-dark.bg-dark.fixed-top
-  a.navbar-brand(href='/') Student Database
-  button.navbar-toggler.navbar-toggler-right(type='button', data-toggle='collapse', data-target='#navbarResponsive', aria-controls='navbarResponsive', aria-expanded='false', aria-label='Toggle navigation')
-    span.navbar-toggler-icon
-  #navbarResponsive.collapse.navbar-collapse
-    ul#exampleAccordion.navbar-nav.navbar-sidenav
-      li.nav-item(data-toggle='tooltip', data-placement='right', title='Dashboard')
-        a.nav-link(href='/')
-          i.fa.fa-fw.fa-dashboard
-          span.nav-link-text
-            | Dashboard
-      li.nav-item(data-toggle='tooltip', data-placement='right', title='Statistics')
-        a.nav-link(href='/statistics?year=2018')
-          i.fa.fa-fw.fa-pie-chart
-          span.nav-link-text
-            | Statistics
-      li.nav-item(data-toggle='tooltip', data-placement='right', title='Students')
-        a.nav-link.nav-link-collapse.collapsed(data-toggle='collapse', href='#collapseStudents', aria-expanded="false" aria-controls="collapseStudents", data-parent='#exampleAccordion')
-          i.fa.fa-fw.fa-table
-          span.nav-link-text
-            | Students
-        ul#collapseStudents.sidenav-second-level.collapse
-          li
-            a(href='/students') Student List
-          li
-            a(href='/input-student') Input New Student
-      li.nav-item(data-toggle='tooltip', data-placement='right', title='Students')
-        a.nav-link.nav-link-collapse.collapsed(data-toggle='collapse', href='#collapseUsers', aria-expanded="false", aria-controls="collapseUsers", data-parent='#exampleAccordion')
-          i.fa.fa-fw.fa-user
-          span.nav-link-text
-            | Users
-        ul#collapseUsers.sidenav-second-level.collapse
-          li
-            a(href='/add-user') Input New User
-      li.nav-item(data-toggle='tooltip', data-placement='right', title='Logout')
-        a.nav-link(href='/logout')
-          i.fa.fa-fw.fa-sign-out
-          span.nav-link-text
-            | Logout
+nav.navbar.navbar-expand-lg.bg-dark.navbar-dark(style= 'margin-bottom: 30px;')
+  a.navbar-brand(href='#')
+  ul.navbar-nav
+    li.nav-item
+      a.nav-link(href='/') Dashboard
+    li.nav-item
+      a.nav-link(href='/students/statistics?year=2018') Statistics
+    li.nav-item.dropdown
+      a#navbardrop.nav-link.dropdown-toggle(href='#', data-toggle='dropdown')
+        | Students
+      .dropdown-menu
+        a.dropdown-item(href='/students') Students List
+        a.dropdown-item(href='/students/input') Input New Student
+    li.nav-item.dropdown
+      a#navbardrop.nav-link.dropdown-toggle(href='#', data-toggle='dropdown')
+        | Users
+      .dropdown-menu
+        a.dropdown-item(href='/users/input') Input New User
+    li.nav-item
+      a.nav-link(href='/logout') Logout

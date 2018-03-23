@@ -11,4 +11,4 @@ public/javascripts
 public/vendor/chart.javascripts
 public/vendor/datatables
 sendgrid.env
-
+config

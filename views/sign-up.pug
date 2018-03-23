@@ -8,7 +8,8 @@ html(lang='en')
     script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js')
-    link(href='sb-admin/vendor/font-awesome/css/font-awesome.min.css', rel='stylesheet', type='text/css')
+    link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css')
+    
     style.
       body {
         background: #eee !important;
@@ -32,7 +33,6 @@ html(lang='en')
       .wrapper
         form.form-signin(action='/signup', method='POST')
           h2.form-signin-heading(align='center', style="margin-bottom: 30px; margin-top: 20px;") Sign Up
-          //input.form-control(type='hidden', name='id', required='')
           input.form-control(type='email', name='email', placeholder='Email', required='')
           input.form-control(type='text', name='username', placeholder='Username', required='', style='margin-top: 20px')
           input.form-control(type='password', name='password', placeholder='Password', required='', style='margin-top: 20px')

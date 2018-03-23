@@ -8,11 +8,8 @@ html(lang='en')
     meta(name='description', content='')
     meta(name='author', content='')
 
-    include includes/css/core.pug
-
-    include includes/css/custom.pug
-
-    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css', integrity='sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm', crossorigin='anonymous')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
     script(src='https://code.jquery.com/jquery-3.2.1.slim.min.js', integrity='sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN', crossorigin='anonymous')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js', integrity='sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q', crossorigin='anonymous')
     script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js', integrity='sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl', crossorigin='anonymous')
@@ -21,47 +18,39 @@ html(lang='en')
     script(type='text/javascript', src='//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js')
     script(type='text/javascript').
     
-      // Load the Visualization API and the piechart package.
       google.charts.load('current', {'packages':['corechart']});
-        
-      // Set a callback to run when the Google Visualization API is loaded.
+
       google.charts.setOnLoadCallback(drawChart);
         
       function drawChart() { 
         
-        // Create our data table out of JSON data loaded from server.
-        var data1 = new google.visualization.arrayToDataTable(!{obj1});
+        var data_gender_ratio = new google.visualization.arrayToDataTable(!{obj_gender});
 
-        var options1 = {'title':'Gender Ratio of Students',
+        var options_gender_ratio = {'title':'Gender Ratio of Students',
                        'width':1000,
                        'height':600};
 
 
-        // Instantiate and draw our chart, passing in some options.
-        var chart1 = new google.visualization.PieChart(document.getElementById('gender_chart'));
+        var chart_gender_ratio = new google.visualization.PieChart(document.getElementById('gender_chart'));
         
-        //var chart1 = new google.visualization.AreaChart(document.getElementById('chart_'));
-        chart1.draw(data1, options1);
+        chart_gender_ratio.draw(data_gender_ratio, options_gender_ratio);
 
-                // Create our data table out of JSON data loaded from server.
-        var data2 = new google.visualization.arrayToDataTable(!{obj2});
+        var data_student = new google.visualization.arrayToDataTable(!{obj_student});
 
-        var options2 = {'title':'Total of Students',
+        var options_student = {'title':'Total of Students',
                        'width':1000,
                        'height':600};
 
-        // Instantiate and draw our chart, passing in some options.
-        //var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
-        var chart2 = new google.visualization.LineChart(document.getElementById('student_chart'));
-        chart2.draw(data2, options2);
+        var chart_student = new google.visualization.LineChart(document.getElementById('student_chart'));
+        chart_student.draw(data_student, options_student);
       }
 
     title Student Database
     
-  body#page-top.fixed-nav.sticky-footer.bg-dark
+  body#page-top.fixed-nav.sticky-footer
     include includes/navbar.pug
     .content-wrapper
-      .container-fluid
+      .container
         // Breadcrumbs
         ol.breadcrumb
           li.breadcrumb-item
@@ -92,11 +81,3 @@ html(lang='en')
                   input.btn.btn-dark(type='submit', value='Search')
                       
             #student_chart.mt-4.items-center
-
-      include includes/footer.pug
-
-      include includes/scroll-to-top.pug
-
-      include includes/js/core.pug
-
-      include includes/js/custom.pug

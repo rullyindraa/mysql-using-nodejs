@@ -7,17 +7,18 @@ html(lang='en')
     meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
     meta(name='description', content='')
     meta(name='author', content='')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css')
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js')
+    link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css')
     
     title Student Database
 
-    include includes/css/core.pug
-
-    include includes/css/custom.pug
-
-  body#page-top.fixed-nav.sticky-footer.bg-dark
+  body#page-top.fixed-nav.sticky-footer
     include includes/navbar.pug
     .content-wrapper
-      .container-fluid
+      .container
         // Breadcrumbs
         ol.breadcrumb
           li.breadcrumb-item
@@ -30,7 +31,7 @@ html(lang='en')
           .card-body
             .table-responsive
               table.table
-                form(action='/filter', method='POST')
+                form(action='/filter/', method='GET')
                   .form-row
                     .col-5
                       .form-group
@@ -38,7 +39,6 @@ html(lang='en')
                     .col-3
                       .form-group
                         select.form-control(name="orderby")
-                          option(name='oderby', value="oderby") Order By
                           option(name='student_id', value="student_id") Student ID
                           option(name='name', value="name") Name
                           option(name='address', value="address") Address
@@ -66,15 +66,19 @@ html(lang='en')
                   for student in data
                     tr
                       td= student.student_id
-                      td= student.admission_date
+                      td= moment(student.admission_date).format('DD-MM-YYYY')
                       td= student.name
                       td= student.address
-                      td= student.date_of_birth
-                      td= student.gender
+                      td= moment(student.date_of_birth).format('DD-MM-YYYY')
+                      - var studgender = student.gender
+                      if studgender === 'M'
+                        td= 'Male'
+                      else
+                        td= 'Female'
                       td= student.major
                       td= student.student_email
                       td
-                        a(href='/'+student.student_id)
+                        a(href='/students/'+student.student_id)
                           button.btn.btn-success.btn-sm(type='button')
                             i.fa.fa-pencil
                         a(href='#')
@@ -103,19 +107,12 @@ html(lang='en')
               function deleteStudent(){
                 var id = window.idStudent;
                 $.ajax({
-                  url:'/delete/'+id,
-                  type:'GET',
+                  url:'/students/delete/'+id,
+                  type:'POST',
                   success : function (respon) {
                   setTimeout(function() {$("#myModal").modal('hide');}, 1000);
                   location.reload();
                   }
                 })
               }
-                        
-      include includes/footer.pug
 
-      include includes/scroll-to-top.pug
-
-      include includes/js/core.pug
-
-      include includes/js/custom.pug
