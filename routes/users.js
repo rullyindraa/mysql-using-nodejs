@@ -12,6 +12,8 @@ router.get('/input', function(req, res) {
 });
 
 router.post('/input', function(req, res) {
+  req.assert('username', 'Username is required').notEmpty();          
+  req.assert('password', 'Password is required').notEmpty();
   req.assert("email", "Enter a valid email address.").isEmail()
   var errors = req.validationErrors();
   if (errors) {
@@ -19,7 +21,7 @@ router.post('/input', function(req, res) {
     errors.forEach(function (error) {
       error_message += error.msg + '\n'
     })
-    req.flash('error', error_message);
+    alertNode(error_message);
     res.render('input-user');
   } else {
     var password = req.body.password;

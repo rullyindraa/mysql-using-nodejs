@@ -82,42 +82,54 @@ router.get('/input', (req, res) =>
 );
 
 router.post('/input', function(req, res) {
-  var studentList = [];
-
-  var insertStudent = {
-    student_id: req.body.student_id,
-    admission_date: req.body.admission_date,
-    name: req.body.name,
-    address: req.body.address,
-    date_of_birth: req.body.date_of_birth,
-    gender: req.body.gender,
-    major: req.body.major,
-    student_email: req.body.student_email
-  };
-
-  var student_id = req.body.student_id;
-  var date_of_birth = req.body.date_of_birth;
-  var today = new Date();
-  var newtoday = moment(today).format('YYYY-MM-DD');
-  
-  con.query('select * from students where student_id = ?', student_id, function(err, rows, fields) {
-    if (err) {
-    console.log(err);
-    } else if (rows.length > 0) {
-      alertNode('You entered duplicate Student ID!');
-    } else if (date_of_birth > newtoday) {
-      alertNode("You can't enter date of birth in future!");
-    } else {
-      con.query('INSERT INTO students set ? ', insertStudent, function(err, rows, fields) {
-        if (err) {
-          console.log(err);
-        } else {
-          console.log(rows);
-        }
-        res.redirect('/students');
-      });
-    }
-  });
+  req.assert('name', 'Name is required').notEmpty();          
+  req.assert('address', 'Address is required').notEmpty();
+  req.assert('date_of_birth', 'Date is required').notEmpty();
+  req.assert('student_email', 'Email is not Valid').isEmail();
+  req.assert('major', 'Major is required').notEmpty();
+  var errors = req.validationErrors();
+  if (errors) {
+    var error_message = '';
+    errors.forEach(function (error) {
+      error_message += error.msg + '\n'
+    })
+    alertNode(error_message);
+  } else {
+    var studentList = [];
+    var insertStudent = {
+      student_id: req.body.student_id,
+      admission_date: req.body.admission_date,
+      name: req.body.name,
+      address: req.body.address,
+      date_of_birth: req.body.date_of_birth,
+      gender: req.body.gender,
+      major: req.body.major,
+      student_email: req.body.student_email
+    };
+    var student_id = req.body.student_id;
+    var date_of_birth = req.body.date_of_birth;
+    var today = new Date();
+    var newtoday = moment(today).format('YYYY-MM-DD');
+    
+    con.query('select * from students where student_id = ?', student_id, function(err, rows, fields) {
+      if (err) {
+      console.log(err);
+      } else if (rows.length > 0) {
+        alertNode('You entered duplicate Student ID!');
+      } else if (date_of_birth > newtoday) {
+        alertNode("You can't enter date of birth in future!");
+      } else {
+        con.query('INSERT INTO students set ? ', insertStudent, function(err, rows, fields) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(rows);
+          }
+          res.redirect('/students');
+        });
+      }
+    });
+  }
 });
 
 router.get('/:id', function(req, res) {
@@ -144,25 +156,39 @@ router.get('/:id', function(req, res) {
 });
 
 router.post('/edit', function(req, res) {
-  var id = req.body.id;
-  var student_id = req.body.student_id;
-  var admission_date = moment(req.body.admission_date).format('YYYY-MM-DD');
-  var name = req.body.name;
-  var address = req.body.address;
-  var date_of_birth = moment(req.body.date_of_birth).format('YYYY-MM-DD');
-  var gender = req.body.gender;
-  var major = req.body.major;
-  var student_email = req.body.student_email;
-
-  var today = new Date();
-  var newtoday = moment(today).format('YYYY-MM-DD');
-  if (date_of_birth < newtoday) {
-    con.query('UPDATE students SET id = ?, admission_date = ?, name = ?, address = ?, date_of_birth = ?, gender = ?, major = ?, student_email = ? WHERE student_id = ?', [id, admission_date, name, address, date_of_birth, gender, major, student_email, student_id], function (error, results, fields) {
-      if (error) throw error;
-      res.redirect('/students');
-    });
+  req.assert('name', 'Name is required').notEmpty();          
+  req.assert('address', 'Address is required').notEmpty();
+  req.assert('date_of_birth', 'Date is required').notEmpty();
+  req.assert('student_email', 'Email is not Valid').isEmail();
+  req.assert('major', 'Major is required').notEmpty();
+  var errors = req.validationErrors();
+  if (errors) {
+    var error_message = '';
+    errors.forEach(function (error) {
+      error_message += error.msg + '\n'
+    })
+    alertNode(error_message);
   } else {
-    alertNode("You can't enter date of birth in future!");
+    var id = req.body.id;
+    var student_id = req.body.student_id;
+    var admission_date = moment(req.body.admission_date).format('YYYY-MM-DD');
+    var name = req.body.name;
+    var address = req.body.address;
+    var date_of_birth = moment(req.body.date_of_birth).format('YYYY-MM-DD');
+    var gender = req.body.gender;
+    var major = req.body.major;
+    var student_email = req.body.student_email;
+
+    var today = new Date();
+    var newtoday = moment(today).format('YYYY-MM-DD');
+    if (date_of_birth < newtoday) {
+      con.query('UPDATE students SET id = ?, admission_date = ?, name = ?, address = ?, date_of_birth = ?, gender = ?, major = ?, student_email = ? WHERE student_id = ?', [id, admission_date, name, address, date_of_birth, gender, major, student_email, student_id], function (error, results, fields) {
+        if (error) throw error;
+        res.redirect('/students');
+      });
+    } else {
+      alertNode("You can't enter date of birth in future!");
+    }
   }
 });
 

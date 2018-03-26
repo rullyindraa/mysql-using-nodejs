@@ -97,16 +97,10 @@ router.post('/forgot', function(req, res, next) {
       function(token, rows, done) {
         const msg = {
           to: [req.body.email],
-          from: 'passwordreset@student.com',
-          subject: 'Student Database Password Reset',
-          text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
-          'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-          'http://' + req.headers.host + '/reset/' + token + '\n\n' +
-          'If you did not request this, please ignore this email and your password will remain unchanged.\n',
-          html: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.<br><br>' +
-          'Please click on the following link, or paste this into your browser to complete the process:<br><br>' +
-          'http://' + req.headers.host + '/reset/' + token + '<br><br>' +
-          'If you did not request this, please ignore this email and your password will remain unchanged.<br>',
+          from: config.message_reset.from,
+          subject: config.message_reset.subject,
+          text: config.message_reset.text + req.headers.host + config.message_reset.reset + token + config.message_reset.text2,
+          html: config.message_reset.html + req.headers.host + config.message_reset.resethtml + token + config.message_reset.html2,
         };
         sgMail.send(msg, function(err) {
           req.flash('info', 'An email has been sent to ' + req.body.email + ' with further instructions.');
@@ -124,13 +118,7 @@ router.get('/reset/:token', function(req, res) {
   if (req.isAuthenticated()) {
     res.render('index');
   } else {
-    con.query('SELECT * FROM users WHERE reset_pwd_token = ?', [req.params.token], function(err, rows) {
-      if (rows.length <= 0) {
-        req.flash('error', 'Password reset token is invalid or has expired.');
-        return res.redirect('/forgot');
-      }
-      res.render('reset');
-    });
+    res.render('reset');
   }
 });
   
@@ -167,12 +155,10 @@ router.post('/reset/:token', function(req, res) {
     function(rows, done) {
       const msgReset = {
         to: [req.body.email],
-        from: 'passwordreset@student.com',
-        subject: 'Your password has been changed',
-        text: 'Hello,\n\n' +
-          'This is a confirmation that the password for your account ' + req.body.email + ' has just been changed.\n',
-        html: 'Hello,<br><br>' +
-        'This is a confirmation that the password for your account ' + req.body.email + ' has just been changed.<br>',
+        from: config.msg_reset_success.from,
+        subject: config.msg_reset_success.subject,
+        text: config.msg_reset_success.text + req.body.email + config.msg_reset_success.text2,
+        html: config.msg_reset_success.html + req.body.email + config.msg_reset_success.html2,
       };
       sgMail.send(msgReset, function(err) {
         req.flash('success', 'Success! Your password has been changed.');
